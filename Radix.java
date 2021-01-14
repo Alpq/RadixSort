@@ -15,6 +15,19 @@ public class Radix{
   }
   public static void radixSort(SortableLinkedList data)
   {
+    SortableLinkedList positives = new SortableLinkedList();
+    SortableLinkedList negatives = new SortableLinkedList();
+     while (data.size() > 0)
+    {
+      int element = data.get(0);
+      if (element >= 0) {positives.add(element);}
+      else {negatives.add(element);}
+      data.remove(0);
+    }
+    radixSortSimple(negatives);
+    radixSortSimple(positives);
+    data.extend(negatives);
+    data.extend(positives);
   }
   public static void radixSortSimple(SortableLinkedList data)
   {
