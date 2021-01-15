@@ -5,7 +5,7 @@ public class Radix{
   }
   public static int length(int n)
   {
-    return (int)Math.floor(Math.log(n));
+    return (int)Math.floor(Math.log(Math.abs(n)));
   }
   public static void merge( SortableLinkedList original, SortableLinkedList[]buckets)
   {
@@ -21,32 +21,32 @@ public class Radix{
     buckets[1] = new SortableLinkedList();
     while (data.size() > 0){
       int digit = data.remove(0);
-      if (digit > 0) {buckets[1].add(digit);} else {buckets[0].add(digit);}
+      if (digit > 0) {buckets[1].add(digit);} else {buckets[0].add(0, digit);}
     }
     merge(data, buckets);
   }
   public static void radixSortSimple(SortableLinkedList data)
   {
-    int cycles = 0;
-    for (int i = 0; i < data.size() ; i ++ )
+    boolean done = false;
+    int cycle = 0;
+    while (!done)
     {
-      cycles = Math.max(length(data.get(i)), cycles);
-    }
-    for (int i = 0; i < cycles; i ++ )
-    {
-      radixSortSimplest(data, i);
+      done = radixSortSimplest(data, cycle);
+      cycle ++;
     }
   }
-  public static void radixSortSimplest(SortableLinkedList data, int base)
+  public static boolean radixSortSimplest(SortableLinkedList data, int base)
   {
     SortableLinkedList[] buckets = new SortableLinkedList[11];
     for(int i = 0; i < 11; i ++) {buckets[i] = new SortableLinkedList();}
+    int sorted = 0;
      while (data.size() > 0)
     {
       int digit = data.remove(0);
       if (length(digit) >= base) {buckets[nth(digit, base) + 1].add(digit);}
-      else {buckets[0].add(digit);}
+      else {buckets[0].add(digit); sorted ++;}
     }
     merge(data, buckets);
+    return sorted == data.size() ? true : false;
   }
 }
