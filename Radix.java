@@ -28,18 +28,23 @@ public class Radix{
   }
   public static void radixSortSimple(SortableLinkedList data)
   {
+    int goal = data.size();
     SortableLinkedList[] buckets = new SortableLinkedList[10];
+    SortableLinkedList sorted = new SortableLinkedList();
     for(int i = 0; i < 10; i ++) {buckets[i] = new SortableLinkedList();}
     int cycle = 0;
-    while (cycle <= 10)
+    int beeg = 0;
+    while (data.size() > 0)
     {
        while (data.size() > 0)
       {
         int digit = data.remove(0);
-        {buckets[nth(digit, cycle)].add(digit);}
+        if (length(digit) < cycle) {sorted.add(digit);}
+        else {buckets[nth(digit, cycle)].add(digit);}
       }
       merge(data, buckets);
       cycle ++;
     }
+    data.extend(sorted);
   }
 }
