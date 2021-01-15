@@ -1,7 +1,7 @@
 public class Radix{
   public static int nth(int n, int col)
   {
-    return n % (int)Math.pow(10, 1 + col);
+    return Math.abs(n / (int)Math.pow(10, col) % 10);
   }
   public static int length(int n)
   {
@@ -9,47 +9,43 @@ public class Radix{
   }
   public static void merge( SortableLinkedList original, SortableLinkedList[]buckets)
   {
-    for (int i =0 ; i < buckets.length ; i ++ ) {
-      original.extend(buckets[i]);
+    for (int i =0 ; i < buckets.length; i ++ ) {
+    original.extend(buckets[i]);
     }
   }
   public static void radixSort(SortableLinkedList data)
   {
-    SortableLinkedList positives = new SortableLinkedList();
-    SortableLinkedList negatives = new SortableLinkedList();
-     while (data.size() > 0)
-    {
-      int element = data.get(0);
-      if (element >= 0) {positives.add(element);}
-      else {negatives.add(element);}
-      data.remove(0);
+    radixSortSimple(data);
+    SortableLinkedList[] buckets = new SortableLinkedList[2];
+    buckets[0] = new SortableLinkedList();
+    buckets[1] = new SortableLinkedList();
+    while (data.size() > 0){
+      int digit = data.remove(0);
+      if (digit > 0) {buckets[1].add(digit);} else {buckets[0].add(digit);}
     }
-    radixSortSimple(negatives);
-    radixSortSimple(positives);
-    data.extend(negatives);
-    data.extend(positives);
+    merge(data, buckets);
   }
   public static void radixSortSimple(SortableLinkedList data)
   {
-    int basesize = 0;
+    int cycles = 0;
     for (int i = 0; i < data.size() ; i ++ )
     {
-      basesize = Math.max(data.get(i), basesize);
+      cycles = Math.max(length(data.get(i)), cycles);
     }
-    for (int i = 0; i < basesize ; i ++ )
+    for (int i = 0; i < cycles; i ++ )
     {
       radixSortSimplest(data, i);
     }
   }
   public static void radixSortSimplest(SortableLinkedList data, int base)
   {
-    SortableLinkedList[] buckets = new SortableLinkedList[10];
-    for (int i = 0; i < 10; i ++ ) { buckets[i] = new SortableLinkedList();}
-    while (data.size() > 0)
+    SortableLinkedList[] buckets = new SortableLinkedList[11];
+    for(int i = 0; i < 11; i ++) {buckets[i] = new SortableLinkedList();}
+     while (data.size() > 0)
     {
-      int digit = nth(data.get(0), base);
-      buckets[digit - 1].add(data.get(0));
-      data.remove(0);
+      int digit = data.remove(0);
+      if (length(digit) >= base) {buckets[nth(digit, base) + 1].add(digit);}
+      else {buckets[0].add(digit);}
     }
     merge(data, buckets);
   }
