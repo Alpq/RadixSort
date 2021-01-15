@@ -21,32 +21,25 @@ public class Radix{
     buckets[1] = new SortableLinkedList();
     while (data.size() > 0){
       int digit = data.remove(0);
-      if (digit > 0) {buckets[1].add(digit);} else {buckets[0].add(0, digit);}
+      if (digit > 0) {buckets[1].add(digit);}
+      else {buckets[0].add(0, digit);}
     }
     merge(data, buckets);
   }
   public static void radixSortSimple(SortableLinkedList data)
   {
-    boolean done = false;
+    SortableLinkedList[] buckets = new SortableLinkedList[10];
+    for(int i = 0; i < 10; i ++) {buckets[i] = new SortableLinkedList();}
     int cycle = 0;
-    while (!done)
+    while (cycle <= 10)
     {
-      done = radixSortSimplest(data, cycle);
+       while (data.size() > 0)
+      {
+        int digit = data.remove(0);
+        {buckets[nth(digit, cycle)].add(digit);}
+      }
+      merge(data, buckets);
       cycle ++;
     }
-  }
-  public static boolean radixSortSimplest(SortableLinkedList data, int base)
-  {
-    SortableLinkedList[] buckets = new SortableLinkedList[11];
-    for(int i = 0; i < 11; i ++) {buckets[i] = new SortableLinkedList();}
-    int sorted = 0;
-     while (data.size() > 0)
-    {
-      int digit = data.remove(0);
-      if (length(digit) >= base) {buckets[nth(digit, base) + 1].add(digit);}
-      else {buckets[0].add(digit); sorted ++;}
-    }
-    merge(data, buckets);
-    return sorted == data.size() ? true : false;
   }
 }
